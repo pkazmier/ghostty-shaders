@@ -8,7 +8,8 @@
 #define SMOKE_ALPHA_MOD 0.5
 #define LAYERS_COUNT 8
 
-#define BLACK_BLEND_THRESHOLD .4
+// Looks best with tokyonight moon
+#define BLACK_BLEND_THRESHOLD .25
 
 #define VEC3_1 (vec3(1.0))
 
