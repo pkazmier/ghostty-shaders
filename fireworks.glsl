@@ -4,7 +4,7 @@
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 // Email:countfrolic@gmail.com Twitter:@The_ArtOfCode
 
-#define BLACK_BLEND_THRESHOLD .4
+#define BLACK_BLEND_THRESHOLD .25
 #define PI 3.141592653589793238
 #define TWOPI 6.283185307179586
 #define S(x,y,z) smoothstep(x,y,z)
@@ -104,7 +104,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         p.x *= 1.6;
         c += explosion(uv, p, id, et);
     }
-    c = Rainbow(c);
+    // c = Rainbow(c);
 
     vec2 termUV = fragCoord.xy / iResolution.xy;
     vec4 terminalColor = texture(iChannel0, termUV);
