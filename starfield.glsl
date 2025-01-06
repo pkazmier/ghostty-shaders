@@ -1,3 +1,9 @@
+// transparent background
+const bool transparent = false;
+
+// terminal contents luminance threshold to be considered background (0.0 to 1.0)
+const float threshold = 0.15;
+
 // divisions of grid
 const float repeats = 30.;
 
@@ -6,6 +12,10 @@ const float layers = 21.;
 
 // star colors
 const vec3 white = vec3(1.0); // Set star color to pure white
+
+float luminance(vec3 color) {
+    return dot(color, vec3(0.2126, 0.7152, 0.0722));
+}
 
 float N21(vec2 p) {
     p = fract(p * vec2(233.34, 851.73));
@@ -20,7 +30,7 @@ vec2 N22(vec2 p) {
 
 mat2 scale(vec2 _scale) {
     return mat2(_scale.x, 0.0,
-                0.0, _scale.y);
+        0.0, _scale.y);
 }
 
 // 2D Noise based on Morgan McGuire
@@ -39,8 +49,8 @@ float noise(in vec2 st) {
 
     // Mix 4 corners percentages
     return mix(a, b, u.x) +
-           (c - a) * u.y * (1.0 - u.x) +
-           (d - b) * u.x * u.y;
+        (c - a) * u.y * (1.0 - u.x) +
+        (d - b) * u.x * u.y;
 }
 
 float perlin2(vec2 uv, int octaves, float pscale) {
@@ -79,7 +89,7 @@ vec3 stars(vec2 uv, float offset) {
 
     // Get position
     vec2 ipos = floor(uv);
-    
+
     // Return uv as 0 to 1
     uv = fract(uv);
 
@@ -97,29 +107,29 @@ vec3 stars(vec2 uv, float offset) {
     return col; // Return pure white stars only
 }
 
-void mainImage( out vec4 fragColor, in vec2 fragCoord )
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     // Normalized pixel coordinates (from 0 to 1)
-    vec2 uv = fragCoord/iResolution.xy;
-    
+    vec2 uv = fragCoord / iResolution.xy;
+
     vec3 col = vec3(0.);
-	
-    for (float i = 0.; i < layers; i++ ){
-    	col += stars(uv, i);
+
+    for (float i = 0.; i < layers; i++) {
+        col += stars(uv, i);
     }
 
-
-    // Output to screen
-    // fragColor = vec4(col,1.0);
-    
     // Sample the terminal screen texture including alpha channel
     vec4 terminalColor = texture(iChannel0, uv);
 
+    if (transparent) {
+        col += terminalColor.rgb;
+    }
+
     // Make a mask that is 1.0 where the terminal content is not black
-    float mask = 1 - step(0.5, dot(terminalColor.rgb, vec3(1.0)));
+    float mask = 1 - step(threshold, luminance(terminalColor.rgb));
+
     vec3 blendedColor = mix(terminalColor.rgb, col, mask);
 
     // Apply terminal's alpha to control overall opacity
     fragColor = vec4(blendedColor, terminalColor.a);
-
 }
