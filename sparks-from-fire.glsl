@@ -212,7 +212,17 @@ vec3 layeredParticles(in vec2 uv, in float sizeMod, in float alphaMod, in int la
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 uv = (2.0 * fragCoord - iResolution.xy) / iResolution.x;
+    //vec2 uv = (2.0 * fragCoord - iResolution.xy) / iResolution.x;
+
+    // 1) Find the smaller of (width, height)
+    float scale = min(iResolution.x, iResolution.y);
+
+    // 2) Center fragCoord so that (0,0) is in the middle of the screen
+    vec2 centered = fragCoord - 0.5 * iResolution.xy;
+
+    // 3) Divide by 'scale' so the effect is the same in both X and Y
+    //    This ensures shapes remain undistorted
+    vec2 uv = centered / scale; 
     
     // float vignette = 1.1 - smoothstep(0.4, 1.4, length(uv + vec2(0.0, 0.3)));
     float vignette = 1.3 - smoothstep(0.4, 1.4, length(uv + vec2(0.0, 0.3)));
