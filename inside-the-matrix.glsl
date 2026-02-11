@@ -7,6 +7,7 @@
   @pkazmier modified this shader to work in Ghostty.
 */
 
+#define BLACK_BLEND_THRESHOLD .25
 const int ITERATIONS = 40;   //use less value if you need more performance
 const float SPEED = .5;
 
@@ -405,9 +406,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
   	// Combine the matrix effect with the terminal color
   	// vec3 blendedColor = terminalColor.rgb + col;
 
-    // Make a mask that is 1.0 where the terminal content is not black
-    float mask = 1.2 - step(0.5, dot(terminalColor.rgb, vec3(1.0)));
-    vec3 blendedColor = mix(terminalColor.rgb * 1.2, col, mask);
+    // // Make a mask that is 1.0 where the terminal content is not black
+    float mask = 1.4 - step(0.4, dot(terminalColor.rgb, vec3(1.0)));
+    vec3 blendedColor = mix(terminalColor.rgb * 1.6, col, mask);
 
     fragColor = vec4(blendedColor, terminalColor.a);
 }
